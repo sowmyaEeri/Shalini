@@ -1,0 +1,2708 @@
+    CONTINUE NOTES
+
+iv)Conversion Function
+========================
+A conversion function is used to convert one type to another type.
+ex:
+	TO_CHAR() 
+
+We have two pseudo's for TO_CHAR() function.
+
+1)number to_char()
+-----------------
+	It will accept '9' in digits and '$' or euro's symbol.
+	ex:
+		select eid,ename,esal from emp;	
+
+		select eid,ename,TO_CHAR(esal,'9,999') from emp;
+
+		select eid,ename,TO_CHAR(esal,'99,999') from emp;
+
+		select eid,ename,TO_CHAR(esal,'99,999') as ESAL from emp;
+
+		select eid,ename,TO_CHAR(esal,'$99,999') as ESAL from emp;	
+
+2)date to_char() 
+------------------
+	select TO_CHAR(sysdate,'dd-MM-yyyy') from dual; 
+
+	select TO_CHAR(sysdate,'yyyy-MM-dd') from dual; 
+
+	select TO_CHAR(sysdate,'DAY') from dual; //WEDNESDAY
+
+	select TO_CHAR(sysdate,'DY') from dual; //WED
+
+	select TO_CHAR(sysdate,'MONTH') from dual; //MAY 
+
+	select TO_CHAR(sysdate,'YEAR') from dual;  //TWENTY TWENTY-THREE
+
+	select TO_CHAR(sysdate,'dd') from dual;	//24
+	
+	select TO_CHAR(sysdate,'MM') from dual; //05
+
+	select TO_CHAR(sysdate,'yy') from dual; //23
+
+	select TO_CHAR(sysdate,'HH:MI:SS') from dual; //09:14:45
+
+	select TO_CHAR(sysdate,'dd-MM-yyyy HH:MI:SS') from dual; 
+
+
+Group by Clause
+==================
+It is used to divide the rows into multiple groups so that we can apply group functions.
+
+A column which is present in select clause then same column must be there in group by clause.
+
+Q1)Write a query to display sum of salary of each department?
+
+	select sum(esal),deptno from emp group by deptno; 
+
+Q2)Write a query to display highest salary of each department?
+
+	select max(esal),deptno from emp group by deptno;
+
+Q3)Write a query to display average salary of each job?
+
+	select avg(esal),job from emp group by job;
+
+Having clause
+===============
+Having clause is used to filter the output from group by clause.
+
+Having clause must declare after group by clause.
+
+Q4)Write a query to display sum of salary of each department whose sum of salary is greater then 35000?
+
+	select sum(esal),deptno from emp group by deptno having sum(esal)>35000;
+
+
+Q5)Write a query to display minimum salary of each job whose minimum salary is less then 25000?
+
+	select min(esal),job from emp group by job having min(esal)<25000;
+
+Order by clause
+================
+Order by clause is used to arrange the rows in a table.
+
+By default it will arrange all the records in ascending order.
+
+ex:
+	select * from student order by sno;
+
+	select * from student order by sno desc;
+	
+	select * from emp order by ename;
+
+	select * from emp order by esal;
+
+Integrity constraints
+======================
+A constraint is a rule which is applied on a table.
+
+Using contraints we can achieve accuracy and quality of data.
+
+We have following list of constraints.
+
+1)NOT NULL
+
+2)UNIQUE
+
+3)PRIMARY KEY 
+
+4)FOREIGN KEY 
+
+5)CHECK 
+
+Contraints are created into two levels.
+
+i)column level
+
+ii)table level 
+
+
+1)NOT NULL
+-------------
+NOT NULL constraint does not accept null values.
+
+It will accept duplicate values.
+
+NOT NULL constrains can be created only at column level.
+
+
+column level
+-----------
+drop table student;
+
+create table student (sno number(3) NOT NULL, sname varchar2(10), sadd varchar2(12));
+
+insert into student values(101,'raja','hyd'); 
+
+insert into student values(102,null,null);
+
+insert into student values(101,'ramulu','vizag');
+
+insert into student values(null,'ravi','delhi'); //invalid 
+
+commit;
+
+Note 
+----
+NOT NULL constraint can be created for multiple columns.
+
+ex: 
+	
+create table student (sno number(3) NOT NULL, 
+				sname varchar2(10) NOT NULL , 
+					sadd varchar2(12) NOT NULL);
+
+insert into student values(null,'raja','hyd'); //invalid 
+
+insert into student values(102,null,'delhi'); //invalid 
+
+insert into student values(103,'ramulu',null); //invalid 
+
+2)UNIQUE
+-----------
+UNIQUE constraint will not accept duplicate values.
+
+It will accept null values.
+
+UNIQUE constraint can be created at column level as well as table level.
+
+
+column level
+-----------
+drop table student;
+
+create table student (sno number(3) UNIQUE, sname varchar2(10), sadd varchar2(12));
+
+insert into student values(101,'raja','hyd'); 
+
+insert into student values(102,'ravi','delhi');
+
+insert into student values(null,'ramana','vizag');
+
+insert into student values(101,'ramulu','vizag'); //invalid 
+
+commit;
+
+
+table level
+------------
+drop table student;
+
+create table student (sno number(3) , 
+				sname varchar2(10), 
+					sadd varchar2(12), UNIQUE(sno));
+
+insert into student values(101,'raja','hyd'); 
+
+insert into student values(102,'ravi','delhi');
+
+insert into student values(null,'ramana','vizag');
+
+insert into student values(101,'ramulu','vizag'); //invalid 
+
+commit;
+
+
+Note:
+------
+UNIQUE constraint can be created for multiple columns.
+ex:
+
+drop table student;
+
+create table student (sno number(3) UNIQUE, 
+				sname varchar2(10) UNIQUE, 
+					sadd varchar2(12) UNIQUE);
+
+insert into student values(101,'raja','hyd'); 
+
+insert into student values(101,'ravi','delhi'); //invalid 
+
+insert into student values(102,'raja','delhi'); // invalid 
+
+insert into student values(103,'ramana','hyd'); //invalid 
+
+commit; 
+
+3)PRIMARY KEY 
+-----------------
+PRIMARY KEY is a combination of NOT NULL and UNIQUE constraint.
+
+It will not accept null values and duplicate values.
+
+A table can have only one primary key.
+
+PRIMARY key constraint can be created at column level as well as table level.
+
+column level
+---------------
+drop table student;
+
+create table student (sno number(3) PRIMARY KEY, 
+				sname varchar2(10) , 
+					sadd varchar2(12));
+
+insert into student values(101,'raja','hyd'); 
+
+insert into student values(101,'ravi','delhi'); // invalid 
+
+insert into student values(null,'ramana','vizag'); // invalid 
+
+commit;  
+
+table level
+-----------
+drop table student;
+
+create table student (sno number(3), 
+				sname varchar2(10) , 
+					sadd varchar2(12),  PRIMARY KEY(sno));
+
+insert into student values(101,'raja','hyd'); 
+
+insert into student values(101,'ravi','delhi'); // invalid 
+
+insert into student values(null,'ramana','vizag'); // invalid 
+
+commit;  
+
+
+
+
+
+
+
+4)FOREIGN KEY 
+---------------
+A foreign key is used to establish the relationship between two tables.
+
+This relationship is called parent and child relationship or master and detailed relationship.
+
+To establish the relationship between two tables parent table must have primary key or unique constraint and child table must have foreign key.
+
+A foreign key will accept only those values which are present in primary key.
+
+A foreign key will accept duplicates and null values also.
+
+Foregin key column name may or may not match with primary key column name but datatype must match.
+
+Diagram: oracle5.1
+
+college table
+----------------
+drop table college;
+
+create table college(sno number(3) primary key,
+				sname varchar2(10),
+					sadd varchar2(12));
+
+insert into college values(101,'raja','hyd');
+insert into college values(102,'ravi','delhi');
+insert into college values(103,'ramana','vizag');
+commit;
+
+library table
+-----------
+drop table library;
+
+create table library(rollno number(3) REFERENCES college(sno),
+			 book_name varchar2(10));
+
+insert into library values(101,'java');
+
+insert into library values(102,'oracle');
+
+insert into library values(103,'springboot');
+
+insert into library values(103,'react');
+
+insert into library values(null,'angular');
+
+commit;
+
+5)CHECK 
+---------
+A check constraint is used to describe domain of a column.
+
+Here domain means what type of value a column must accept.
+
+A check constraint can be created at column level and table level.
+
+column level
+------------
+
+ex:
+
+drop table student;
+
+create table student(sno number(3),
+			sname varchar2(10), 
+				smarks number(3) check(smarks<=100));
+
+insert into student values(101,'raja',87);
+
+insert into student values(102,'ravi',100);
+
+insert into student values(103,'ramana',200); //invalid 
+
+commit;
+
+
+ex:
+
+drop table student;
+
+create table student(sno number(3),
+			sname varchar2(10), 
+				smarks number(3) check(smarks between 0 and 100));
+
+insert into student values(101,'raja',87);
+
+insert into student values(102,'ravi',100);
+
+insert into student values(103,'ramana',200); //invalid 
+
+commit;
+
+
+ex:
+
+drop table student;
+
+create table student(sno number(3),
+			sname varchar2(10) check(sname=upper(sname)), 
+				smarks number(3));
+
+insert into student values(101,'raja',87); //invalid 
+
+insert into student values(102,'RAVI',100);
+
+insert into student values(103,'RaMaNa',200);  //invalid 
+
+commit;
+
+ex:
+
+drop table student;
+
+create table student(sno number(3),
+			sname varchar2(10) check(sname=lower(sname)), 
+				smarks number(3));
+
+insert into student values(101,'raja',87); 
+
+insert into student values(102,'RAVI',100); //invalid 
+
+insert into student values(103,'RaMaNa',200);  //invalid 
+
+commit;
+
+
+table level
+-------------
+ex:
+
+drop table student;
+
+create table student(sno number(3),
+			sname varchar2(10) , 
+				smarks number(3), check(sname=lower(sname)));
+
+insert into student values(101,'raja',87); 
+
+insert into student values(102,'RAVI',100); //invalid 
+
+insert into student values(103,'RaMaNa',200);  //invalid 
+
+commit;
+
+
+
+TCL commands
+=============
+We have three TCL commands.
+
+1)commit
+
+2)rollback
+
+3)savepoint 
+
+1)commit
+---------
+It is used to make the changes permanent to database.
+
+ex:
+	drop table student;
+
+	create table student(sno number(3),sname varchar2(10),sadd varchar2(12));
+	
+	insert into student values(101,'raja','hyd');
+
+	insert into student values(102,'ravi','delhi');
+
+	insert into student values(103,'ramana','vizag');
+
+	commit;
+
+	select * from student;// 3 records display 		
+
+
+2)rollback
+----------
+It is used to undo the changes which are not permanent.
+
+ex:
+	drop table student;
+
+	create table student(sno number(3),sname varchar2(10), sadd varchar2(12));
+
+	insert into student values(101,'raja','hyd');
+	
+	insert into student values(102,'ravi','delhi');
+	
+	commit; 
+
+	insert into student values(103,'ramana','vizag');
+	
+	insert into student values(104,'ramulu','pune');
+
+	select * from student; // 4 records display 
+
+	rollback;
+
+	select * from student; // 2 records display 
+
+
+3)savepoint
+------------
+It is to maintain the logical transaction of the database.
+
+It means instead of complete rollback we can rollback upto save point.
+
+syntax:
+	savepoint <save_point_name>;
+
+ex:
+	drop table student;
+
+	create table student(sno number(3),sname varchar2(10),sadd varchar2(12));
+
+	insert into student values(101,'raja','hyd');
+
+	insert into student values(102,'ravi','delhi');
+
+	savepoint sp1;
+
+	insert into student values(103,'ramana','vizag');
+
+	insert into student values(104,'ramulu','pune');
+
+	savepoint sp2;
+	
+	insert into student values(105,'jose','texas');
+
+	insert into student values(106,'mark','florida');
+
+	select * from student; // 6 records display 
+
+	rollback to sp2;
+
+	select * from student; // 4 records display 
+
+
+Pseudo columns
+==============
+A pseudo column means a column which is not real.
+
+We have two pseudo columns.
+
+1)ROWNUM 
+
+2)ROWID 
+
+1)ROWNUM 
+--------
+ROWNUM value always starts with 1 and increment by 1.
+
+ROWNUM values are temperory. Once the query execution is completed we will loss the rownum values.
+
+ex:
+	select eid,ename,esal from emp;
+
+	select rownum,eid,ename,esal from emp;
+
+
+
+2)ROWID 
+--------
+ROWID is a memory address where our record will store in a database table.
+
+ROWID is permanent.
+
+ex:
+	select rownum,eid,ename,esal from emp;
+		
+	select rowid,rownum,eid,ename,esal from emp;
+
+
+Interview Queries
+-------------------
+
+Q6)Write a query to display first three records from emp table?
+
+	select * from emp where rownum<=3;
+
+
+Q7)Write a query to display 4th record from emp table?
+
+	select * from emp where rownum<=4
+	minus
+	select * from emp where rownum<=3;
+
+
+DCL commands
+===============
+
+Schema:  
+-------
+	Schema is a memory location which is used to run SQL commands.
+
+Privileges:
+-----------
+	Permissions given to a user is called privileges.
+
+	In general rights given to a user is called privileges.
+
+	We have two types of privileges.
+
+	1) System privilege : Permissions given by DBA to User.
+
+	2) Object privilege : Permissions given by one user to another user.
+
+
+DBA> create user rakesh identified by rakesh;
+
+DBA> create user bhavya identified by bhavya;
+
+
+Rakesh> conn rakesh/rakesh  logon denied
+
+bhavya> conn bhavya/bhavya  logon denied 
+
+DBA> grant connect,resource to rakesh;
+DBA> grant connect,resource to bhavya;
+DBA> grant connect,resource to rakesh,bhavya;
+
+
+Rakesh> conn rakesh/rakesh  
+
+bhavya> conn bhavya/bhavya  
+
+Rakesh> 
+create table employee(eid number(3),ename varchar2(10),esal number(10,2));
+insert into employee values(501,'Alan',10000);
+insert into employee values(502,'Jose',20000);
+insert into employee values(503,'Kelvin',30000);
+commit;
+
+bhavya> select * from employee; // table or view does not exist 
+
+
+rakesh> grant select on employee to bhavya;
+
+bhavya> select * from rakesh.employee;
+
+bhavya> delete from rakesh.employee; //insufficient privilege
+
+rakesh> grant delete,update on employee to bhavya;
+
+bhavya> delete from rakesh.employee;
+bhavya> commit; 
+
+rakesh> revoke select,update,delete on employee from bhavya;
+
+bhavya> disc 
+
+rakesh> disc 
+
+DBA> revoke connect,resource from rakesh,bhavya;
+
+
+
+Indexes
+=========
+Indexes is an object which is used to improve performance of a select command.
+
+Index is a database is same as index in a book.
+
+We can create index only to those columns which are widely used in a where condition.
+
+Whenever we create index , two columns will be generated.One column is  ROWID and another column is indexed column and all the records will store in ascending order inside indexed column.
+
+			Index table 
+		-------------------------------
+		ROWID	|	INDEXED_COLUMN	
+		------------------------------- 
+			|	8000
+			|	10000
+			|	15000
+			|	18000
+			|	28000
+			|	48000
+		--------------------------------
+
+We have two types of indexes.
+
+1)Simple index
+
+2)Complex index 			
+
+1)Simple index
+-----------------
+If index is created only for one column is called simple index.
+
+syntax:
+	create index <index_name> on <table_name>(column_name);
+
+ex:
+	create index idx1 on emp(esal);	
+
+	select * from emp where eid=205;  // No index is used
+
+	select * from emp where esal=28000;
+
+	Here index is used if we use index column in where condition.
+
+2)Complex index 
+----------------
+If index is created for more then one column is called complex index.
+
+syntax:
+	create index <index_name> on <table_name>(column_name1,column_name2,...);
+
+ex:
+	create index idx2 on emp(eid,comm);
+
+	select * from emp where eid=201 or comm=500;
+
+	Here index is used when we use both index columns in where condition.
+
+	
+Indexes are categories into two types.
+
+i)Non-Unique index
+
+ii)Unique index 
+
+i)Non-Unique index
+------------------
+By default every index is a non-unique index.
+
+If index contains duplicate values is called non-unique index.
+
+ex:
+	create index  idx3 on emp(deptno);
+
+ii)Unique index 
+----------------
+If index contains unique values is called unique index.
+ex:
+	
+	create unique index idx4 on emp(eid); 
+
+
+Q)Write a query to see the list of indexes present in database?
+
+	select index_name from user_indexes;
+
+
+Q)Write a query to drop the index from database?
+
+	drop index idx1;
+	drop index idx2;
+	drop index idx3;
+	drop index idx4;
+
+Sequences
+==========
+Sequence is an object which is used to generate the numbers.
+
+syntax:
+	create sequence <sequence_name> start with value increment by value;
+
+ex:
+	create sequence sq1 start with 1 increment by 1;
+
+	create sequence sq2 start with 101 increment by 1;
+
+	create sequence sq3 start with 10 increment by 10;
+
+
+We have two pseudo's in a sequence.
+
+1)NEXTVAL 
+-------
+	It will return next value of a sequence.
+
+	ex:
+		create sequence sq1 start with 101 increment by 1;
+
+		drop table student;	
+		
+		create table student(sno number(3),sname varchar2(10),
+							sadd varchar2(12));
+
+		insert into student values(sq1.NEXTVAL,'raja','hyd');
+		insert into student values(sq1.NEXTVAL,'ravi','delhi');
+		insert into student values(sq1.NEXTVAL,'ramana','vizag');
+		commit;
+
+2)CURRVAL 
+---------
+	It will return the last number which is generated by sequence.
+	ex:
+		select sq1.CURRVAL from dual;
+
+
+Q)Write a query to see the list of sequences present in database?
+
+	select sequence_name from user_sequences;
+
+
+Q)Write a query to drop the sequence?
+
+	drop sequence sq1;
+
+
+Synonyms
+=========
+Alternate name given to a table is called synonym.
+
+We can use synonym name instead of table name.
+
+Synonyms are used to reduce the length of the table name.
+
+syntax:
+	create synonym <synonym_name> for <object_name>;
+ex:
+	create synonym stud for student;
+
+	select * from stud;
+	delete from stud where sno=103;	
+
+	
+Q)Write a query to see the list of synonyms present in database?
+
+	select synonym_name from user_synonyms;
+
+Q)Write a query to drop the synonym?
+
+	drop synonym stud;
+
+
+Joins
+======
+	select * from emp,dept; // 6*4=24 Records 
+
+	select eid,ename,esal,dname,dloc from emp,dept; // 6*4=24 records
+
+	select eid,ename,esal,deptno,dname,dloc from emp,dept; 
+
+	//Here we will column ambiguiously defined
+
+	To overcome this limitation we can use table_name.column_name.
+
+	select emp.eid,emp.ename,emp.esal,dept.deptno,dept.dname,dept.dloc 
+	from emp ,dept; // 6 * 4 = 24 records 
+
+Table Alias
+-----------
+A userdefined heading given to a table is called table alias.
+
+Using table alias length of the table will reduce and mean while performance will be 
+maintained.
+
+ex:
+	select e.eid,e.ename,e.esal,d.deptno,d.dname,d.dloc from emp e, dept d;
+
+
+Definition:
+-----------
+Joins are used to retrieve the data from one or more then one table.
+
+We have different types of joins.
+
+1)Equi-Join
+
+2)Non-Equi Join
+
+3)Self Join
+
+4)Cartisian Product
+
+5)Inner Join
+
+6)Outer Join 
+
+1)Equi-Join
+-----------
+When two tables are joined based on common columns is called equi-join.
+ex:
+	select e.eid,e.ename,e.esal,d.dname,d.dloc from emp e,dept d
+	where(e.deptno=d.deptno); // 6 records 
+
+
+2)Non-Equi Join
+-----------------
+When two tables are joined without join condition is called non-equi join.
+ex:
+	select e.eid,e.ename,e.esal,d.dname,d.dloc from emp e,dept d
+	where esal between 15000 AND 30000; // 3 * 4 = 12 records 
+
+
+3)Self Join
+------------
+When table is joined to itself is called self join.
+
+In self join we need to create two table alias for the same column.
+
+ex:
+
+	select e1.eid,e1.ename,e1.esal,e2.deptno,e2.job from emp e1,emp e2
+	where (e1.deptno=e2.deptno); // 6 + 6 = 12 records 	
+
+
+4)Cartisian Product
+----------------------
+When tables are joined without any join condition is called cartisian product.
+ex:
+	select e.eid,e.ename,e.esal,d.dname,d.dloc from emp e,dept d; //6*4=24
+
+5)Inner Join
+--------------
+It is similar to equi-join.
+
+Inner join given by ANSI people.
+
+ANSI stands for American National Standard Insitute.
+
+ex:
+	select e.eid,e.ename,e.esal,d.dname,d.dloc from emp e INNER JOIN dept d
+	ON(e.deptno=d.deptno); // 6 records
+
+
+6)Outer Join 
+---------------
+It is a extension of equi join.
+
+It will return matching as well as not matching records..
+
+A '+' is denoted as outer join operator.
+
+We have different types of outer joins.
+
+i)Left Outer Join
+----------------
+	select e.eid,e.ename,e.esal,e.deptno,d.deptno,d.dname,d.dloc from emp e LEFT 		OUTER JOIN dept d ON(e.deptno=d.deptno);
+
+ii)Right Outer Join
+--------------------
+	select e.eid,e.ename,e.esal,e.deptno,d.deptno,d.dname,d.dloc from emp e RIGHT 		OUTER JOIN dept d ON(e.deptno=d.deptno);
+
+iii)Full Outer Join 
+------------------
+	select e.eid,e.ename,e.esal,e.deptno,d.deptno,d.dname,d.dloc from emp e FULL 		OUTER JOIN dept d ON(e.deptno=d.deptno);
+
+
+
+					PL/SQL
+						
+PL/SQL stands for Procedural Language extension to Structured Query Language.
+
+PL/SQL is a extension of SQL and it will give following features.
+
+1)We can achieve programming features like control statements, loops and etc.
+
+2)It reduces network traffic.
+
+3)We can display custom error messages by using the concept of exception handling.
+
+4)We can perform related operations by using the concept of triggers.
+
+5)We can save the source code permanent to database for repeated execution.
+
+PL/SQL Block
+==============
+A PL/SQL program is also known as PL/SQL block.
+
+DECLARE
+-
+-	// Declaration Section
+-
+BEGIN
+-
+-	// Execution section 
+-
+EXCEPTION
+-
+-	// Exception section 
+-
+END;
+/
+
+Declaration section
+-----------------
+In declaration block we can declare variables, exceptions and cursors.
+It is optional section.
+
+Execution section
+------------------
+In execution section we will declare our actual code.
+It is mandatory section.
+
+Exception section
+---------------
+This section contains some lines of code which are executed when exception is occur.
+It is optional section.
+
+
+To see the output in PL/SQL we need to use below command.
+ex:
+
+	SQL> set  serveroutput   on 
+
+
+
+Q)Write a PL/SQL program to display Hello World?
+
+BEGIN
+DBMS_OUTPUT.PUT_LINE('Hello World');
+END;
+/
+
+
+Here DBMS_OUTPUT is a package name.
+Here PUT_LINE is a procedure name.
+A '/' is used to submit the pl/sql program in database.
+
+Q)Write a PL/SQL program to perform sum of two numbers?
+
+DECLARE
+A number(3);
+B number(3);
+C number(6);
+BEGIN
+A:=10;
+B:=20;
+C:=A+B;
+DBMS_OUTPUT.PUT_LINE(C);
+END;
+/
+
+Declaration and Intialization in a single line
+-------------------------------------------
+DECLARE
+A number(3):=10;
+B number(3):=20;
+C number(6):=A+B;
+BEGIN
+DBMS_OUTPUT.PUT_LINE('Sum of two numbers is ='||C);
+END;
+/
+
+We can read dynamic inputs by using '&' sumbol.
+
+ex:
+
+DECLARE
+A number;
+B number;
+C number;
+BEGIN
+A:=&a;
+B:=&b;
+C:=A+B;
+DBMS_OUTPUT.PUT_LINE('sum of two numbers is ='||C);
+END;
+/
+
+In PL/SQL we can perform DML and DRL operations.
+
+
+Q)Write a PL/SQL program to insert a record into student table?
+
+DECLARE
+L_Sno  number(3);
+L_Sname varchar2(10);
+L_Sadd varchar2(12);
+BEGIN
+L_Sno:=&no;
+L_Sname:='&sname';
+L_Sadd:='&sadd';
+insert into student values(L_Sno,L_Sname,L_Sadd);
+DBMS_OUTPUT.PUT_LINE('Record Inserted');
+END;
+/
+
+Q)Write a PL/SQL program to update student name based on student number?
+
+DECLARE 
+L_Sno number(3);
+L_Sname varchar2(10);
+BEGIN
+L_Sno:=&sno;
+L_Sname:='&sname';
+update student set sname=L_sname where sno=L_Sno;
+DBMS_OUTPUT.PUT_LINE('Record Updated');
+END;
+/
+
+Q)Write a PL/SQL program to delete student record based on student number?
+
+DECLARE 
+L_Sno number(3);
+BEGIN
+L_Sno:=&sno;
+delete from student where sno=L_Sno;
+DBMS_OUTPUT.PUT_LINE('Record Deleted');
+END;
+/
+
+To perform select command in PL/SQL we need to use "into" clause.
+
+
+Q)Write a PL/SQL program to display student name and student address based on 
+  student number?
+
+DECLARE
+L_Sno number(3);
+L_Sname varchar2(10);
+L_Sadd varchar2(12);
+BEGIN
+L_Sno:=&sno;
+select sname,sadd into L_Sname,L_Sadd from student where sno=L_Sno;
+DBMS_OUTPUT.PUT_LINE(L_Sname||'  '||L_Sadd);
+END;
+/
+
+Percentag(%) TYPE attribute
+============================
+It is used to declare a local variable with respect to column of a table.
+
+syntax:
+		<variable_name>  <table_name><col_name>%TYPE;
+
+ex:
+		A   emp.ename%TYPE;
+
+
+Q)Write a PL/SQL program to display employee name, employee salary based on employee id?
+
+DECLARE 
+L_Eid  emp.eid%TYPE;
+L_Ename emp.ename%TYPE;
+L_Esal emp.esal%TYPE;
+BEGIN
+L_Eid:=&eid;
+select ename,esal into L_Ename,L_Esal from emp where eid=L_Eid;
+DBMS_OUTPUT.PUT_LINE(L_Ename||' '||L_Esal);
+END;
+/
+
+Q)Write a PL/SQL program to read employee information whose employee id is 203?
+
+DECLARE 
+L_Eid emp.eid%TYPE;
+L_Ename emp.ename%TYPE;
+L_Esal emp.esal%TYPE;
+L_Deptno emp.deptno%TYPE;
+L_Job emp.job%TYPE;
+L_Comm emp.comm%TYPE;
+BEGIN
+select eid,ename,esal,deptno,job,comm into L_Eid,L_Ename,L_Esal,L_Deptno,L_Job,L_Comm from emp where eid=203;
+DBMS_OUTPUT.PUT_LINE(L_Eid||' '||L_Ename||' '||L_Esal||' '||L_Deptno||' '||L_Job||' '||L_Comm );
+END;
+/
+
+Percentage(%) ROWTYPE attribute
+===============================
+It is use to declare a local variable which holds complete row of a table.
+
+We can't display rowtype attribute variable directly.
+
+syntax:
+	<variable_name>  <table_name>%ROWTYPE;
+
+ex:
+	A    emp%ROWTYPE;	
+
+
+
+Q)Write a PL/SQL program to read employee information whose employee id is 204?
+
+DECLARE 
+A  emp%ROWTYPE;
+BEGIN
+select * into A from emp where eid=204;
+DBMS_OUTPUT.PUT_LINE(A.eid||' '||A.ename||' '||A.esal||' '||A.deptno||' '||A.job||' '||A.comm );
+END;
+/
+
+
+To see the output in PL/SQL we need to use below command.
+ex:
+	SQL> set serveroutput  on
+
+
+
+Control Statements
+===================
+We have following types of control statements.
+
+1)IF THEN 
+----------
+It is used to evalute the code only if our condition is true.
+
+ex:
+	DECLARE
+	A number:=5;
+	BEGIN
+	IF A>2 THEN 
+	DBMS_OUTPUT.PUT_LINE('It is true');
+	END IF;
+	END;
+	/
+	
+
+ex:
+	DECLARE
+	A number:=5;
+	BEGIN
+	IF A>20 THEN 
+	DBMS_OUTPUT.PUT_LINE('It is true');
+	END IF;
+	END;
+	/
+	
+2) IF THEN ELSE
+-------------
+It is used to evalute the code either our condition is true or false.
+
+ex:
+	DECLARE 
+	A number:=5;
+	BEGIN
+	IF A>2 THEN 
+	DBMS_OUTPUT.PUT_LINE('TRUE');
+	ELSE
+	DBMS_OUTPUT.PUT_LINE('FALSE');
+	END IF;
+	END;
+	/
+
+ex:
+	DECLARE 
+	A number:=5;
+	BEGIN
+	IF A>20 THEN 
+	DBMS_OUTPUT.PUT_LINE('TRUE');
+	ELSE
+	DBMS_OUTPUT.PUT_LINE('FALSE');
+	END IF;
+	END;
+	/
+
+3)IF THEN ELSIF THEN ELSE
+-------------------------
+It is used to evalute the code based on multiple conditions.
+
+ex:
+	DECLARE 
+	A number;
+	BEGIN
+	A:=&option;
+	IF A=100 THEN
+	DBMS_OUTPUT.PUT_LINE('It is police number');
+	ELSIF A=103 THEN
+	DBMS_OUTPUT.PUT_LINE('It is enquiry number');
+	ELSIF A=108 THEN
+	DBMS_OUTPUT.PUT_LINE('It is emergency number');
+	ELSE
+	DBMS_OUTPUT.PUT_LINE('Invalid option');
+	END IF;
+	END;
+	/
+
+LOOPS
+=====
+We have three types of loops in PL/SQL.
+
+1)Simple loop
+
+2)While loop
+
+3)For loop 
+
+1)Simple loop
+--------------
+It will evaluate the code untill our condition is true.
+
+ex:
+	DECLARE
+	A number:=1;
+	BEGIN
+	DBMS_OUTPUT.PUT_LINE('Welcome');
+	
+	LOOP
+	DBMS_OUTPUT.PUT_LINE('Hello');
+	EXIT WHEN A=4;
+	A:=A+1;	
+	END LOOP;
+
+	DBMS_OUTPUT.PUT_LINE('Thank You');
+	END;
+	/
+
+Q)Write a PL/SQL program to display 10 natural numbers?
+
+	DECLARE
+	A number:=1;
+	BEGIN
+	
+	LOOP
+	DBMS_OUTPUT.PUT_LINE(A);
+	EXIT WHEN A=10;
+	A:=A+1;	
+	END LOOP;
+
+	END;
+	/
+
+2)While loop
+--------------
+It will evaluate the code untill our condition is true.
+
+ex:
+	DECLARE
+	A number:=1;
+	BEGIN
+	DBMS_OUTPUT.PUT_LINE('Welcome');
+
+	WHILE A<=4 LOOP
+	DBMS_OUTPUT.PUT_LINE('Hello');
+	A:=A+1;
+	END LOOP;
+
+	DBMS_OUTPUT.PUT_LINE('Thank You');
+	END;
+	/
+	
+
+ex:
+	DECLARE
+	A number:=10;
+	BEGIN
+
+	WHILE A>=1 LOOP
+	DBMS_OUTPUT.PUT_LINE(A);
+	A:=A-1;
+	END LOOP;
+
+	END;
+	/	
+
+3) For loop
+--------------
+It will evaluate the code untill our condition is true.
+
+ex:
+	DECLARE 
+	A number:=1;
+	BEGIN
+	DBMS_OUTPUT.PUT_LINE('Welcome');
+	
+	FOR A IN 1 .. 4 LOOP
+	DBMS_OUTPUT.PUT_LINE('Hello');
+	END LOOP;
+
+	DBMS_OUTPUT.PUT_LINE('Thank You');
+	END;
+	/
+	
+Q)Write a PL/SQL program to display multiplication table of a given number?
+
+	DECLARE 
+	N number;
+	A number:=1;
+	BEGIN
+	N:=&num;
+	FOR A IN 1 .. 10 LOOP
+	DBMS_OUTPUT.PUT_LINE(N||' * '||A||' = '||N*A);
+	END LOOP;
+	END;
+	/
+
+Exceptions
+==========
+Runtime Errors are called Exceptions.
+
+We have two types of exceptions in PL/SQL.
+
+1)Predefined Exceptions
+
+2)Userdefined Exceptions
+
+
+1)Predefined Exceptions
+------------------------
+Built-In exceptions are called predefined exceptions.
+
+We have following list of predefined exceptions.
+
+1)NO_DATA_FOUND Exception
+
+2)TOO_MANY_ROWS Exception
+
+3)ZERO_DIVIDE Exception 
+
+4)VALUE_ERROR Exception 
+
+5)DUP_VAL_ON_INDEX Exception 
+
+6) OTHERS 
+
+1)NO_DATA_FOUND Exception
+-------------------------
+This exception will occur when select stmt does not return any value.
+
+ex:
+	DECLARE 
+	L_Ename  emp.ename%TYPE;
+	L_Esal   emp.esal%TYPE;
+	BEGIN
+	select ename,esal into L_Ename,L_Esal from emp where eid=208;
+	DBMS_OUTPUT.PUT_LINE(L_Ename||' '||L_Esal);
+	EXCEPTION
+	WHEN NO_DATA_FOUND THEN
+	DBMS_OUTPUT.PUT_LINE('Please check employee Id');
+	END;
+	/
+
+ex:
+	DECLARE 
+	L_Ename  emp.ename%TYPE;
+	L_Esal   emp.esal%TYPE;
+	BEGIN
+	select ename,esal into L_Ename,L_Esal from emp where eid=201;
+	DBMS_OUTPUT.PUT_LINE(L_Ename||' '||L_Esal);
+	EXCEPTION
+	WHEN NO_DATA_FOUND THEN
+	DBMS_OUTPUT.PUT_LINE('Please check employee Id');
+	END;
+	/
+
+2)TOO_MANY_ROWS Exception
+--------------------------
+This exception will occur when select stmt  returns more then one value.
+
+ex:
+	DECLARE 
+	L_Ename  emp.ename%TYPE;
+	L_Esal   emp.esal%TYPE;
+	BEGIN
+	select ename,esal into L_Ename,L_Esal from emp where deptno=10;
+	DBMS_OUTPUT.PUT_LINE(L_Ename||' '||L_Esal);
+	EXCEPTION
+	WHEN TOO_MANY_ROWS THEN
+	DBMS_OUTPUT.PUT_LINE('select stmt returns more then one value');
+	END;
+	/
+
+
+ex:
+	DECLARE 
+	L_Ename  emp.ename%TYPE;
+	L_Esal   emp.esal%TYPE;
+	BEGIN
+	select ename,esal into L_Ename,L_Esal from emp where deptno=50;
+	DBMS_OUTPUT.PUT_LINE(L_Ename||' '||L_Esal);
+	EXCEPTION
+	WHEN TOO_MANY_ROWS THEN
+	DBMS_OUTPUT.PUT_LINE('select stmt returns more then one value');
+	END;
+	/
+
+3)ZERO_DIVIDE Exception 
+------------------------
+This exception will occur when we try to divide any number with zero.
+
+ex:
+	DECLARE 
+	A number;
+	BEGIN
+	A:=10/0;
+	DBMS_OUTPUT.PUT_LINE(A);
+	EXCEPTION
+	WHEN ZERO_DIVIDE THEN
+	DBMS_OUTPUT.PUT_LINE('we cant divide number with zero');
+	END;
+	/
+	
+4)VALUE_ERROR Exception 
+-----------------------
+This exception will occur when there is a mismatch with datatype or size.
+
+ex:
+	DECLARE 
+	A number(3);	
+	BEGIN
+	A:=12345;
+	DBMS_OUTPUT.PUT_LINE(A);
+	EXCEPTION
+	WHEN VALUE_ERROR THEN 
+	DBMS_OUTPUT.PUT_LINE('Please check the size');
+	END;
+	/
+
+
+ex:
+	DECLARE 
+	L_Esal emp.esal%TYPE;
+	BEGIN
+	select ename into L_Esal from emp where eid=201;
+	DBMS_OUTPUT.PUT_LINE(L_Esal);
+	EXCEPTION
+	WHEN VALUE_ERROR THEN
+	DBMS_OUTPUT.PUT_LINE('Please check the datatype');
+	END;
+	/
+
+5)DUP_VAL_ON_INDEX Exception 
+------------------------------
+This exception will occur when we are trying to insert duplicate values in 
+primary key.
+
+ex:
+	select * from emp;
+
+	alter table emp ADD primary key(eid);
+
+	BEGIN
+	insert into emp values(201,'Keren',20000,40,'Salesman',200);
+	DBMS_OUTPUT.PUT_LINE('Record Inserted');
+	EXCEPTION
+	WHEN DUP_VAL_ON_INDEX THEN
+	DBMS_OUTPUT.PUT_LINE('Duplicates not allowed');
+	END;
+	/
+
+ex:
+	BEGIN
+	insert into emp values(208,'Keren',20000,40,'Salesman',200);
+	DBMS_OUTPUT.PUT_LINE('Record Inserted');
+	EXCEPTION
+	WHEN DUP_VAL_ON_INDEX THEN
+	DBMS_OUTPUT.PUT_LINE('Duplicates not allowed');
+	END;
+	/
+
+	alter table emp DROP primary key;
+
+
+6) OTHERS 
+----------
+It is a universal angular exception which handles all types of exceptions.
+
+ex:
+	
+	DECLARE 
+	L_Ename  emp.ename%TYPE;
+	L_Esal   emp.esal%TYPE;
+	BEGIN
+	select ename,esal into L_Ename,L_Esal from emp where eid=209;
+	DBMS_OUTPUT.PUT_LINE(L_Ename||' '||L_Esal);
+	EXCEPTION
+	WHEN OTHERS THEN
+	DBMS_OUTPUT.PUT_LINE('Please check employee Id');
+	END;
+	/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2)Userdefined Exceptions
+------------------------
+Exceptions which are created by the user based on the requirement are called
+userdefined exceptions.
+
+step1:
+------
+	Declare the exception.
+	ex:
+		<Exception_name> Exception;
+
+step2:
+-----
+	Raise the exception.
+	ex:
+		RAISE  <Exception_name>;
+
+step3:
+------
+	Handle the exception.
+	ex:
+		WHEN <Exception_name> THEN; 
+
+ex:
+	DECLARE 
+	MY_EX1 Exception;
+	A number:=5000;
+	BEGIN
+	IF A>2000 THEN 
+	RAISE MY_EX1;
+	END IF;
+	DBMS_OUTPUT.PUT_LINE(A);
+	EXCEPTION
+	WHEN MY_EX1 THEN 
+	DBMS_OUTPUT.PUT_LINE('Number is too large');
+	END;
+	/
+
+ex:
+	DECLARE 
+	MY_EX1 Exception;
+	A number:=1000;
+	BEGIN
+	IF A>2000 THEN 
+	RAISE MY_EX1;
+	END IF;
+	DBMS_OUTPUT.PUT_LINE(A);
+	EXCEPTION
+	WHEN MY_EX1 THEN 
+	DBMS_OUTPUT.PUT_LINE('Number is too large');
+	END;
+	/
+	
+Cursors
+==========
+Cursor is a memory location which is used to run SQL commands.
+
+We have two types of cursors.
+
+1)Implicit cursor
+
+2)Explicit cursor
+
+
+1)Implicit cursor
+-----------------
+All the activities like opening the cursor, processing the cursor and closing the cursor which is done automatically is called implicit cursor.
+
+We have four types of implict cursor attributes.
+
+i)SQL%ISOPEN
+-----------
+	It is a boolean attribute which always returns false.
+
+ii)SQL%FOUND
+-------------
+	It is a boolean attribute which returns true if SQL command is success and 
+	returns false if SQL command is failed.
+
+iii)SQL%NOTFOUND
+---------------
+	It is completely inverse of SQL%FOUND.
+
+	It is a boolean attribute which returns false if SQL command is success and 
+	returns true if SQL command is failed.
+
+iv)SQL%ROWCOUNT 
+---------------
+	It will return number of records are effecting in a database table.
+
+ex:
+	BEGIN
+	IF  SQL%ISOPEN THEN 
+	DBMS_OUTPUT.PUT_LINE('Cursor is open');
+	ELSE
+	DBMS_OUTPUT.PUT_LINE('Cursor is closed');
+	END IF;
+	END;
+	/
+
+ex:2
+-----
+	BEGIN
+	update student set sname='jojo' where sno=101;
+	IF SQL%FOUND THEN 
+	DBMS_OUTPUT.PUT_LINE('Record updated');
+	ELSE
+	DBMS_OUTPUT.PUT_LINE('Record Not Updated');
+	END IF;
+	END;
+	/
+
+
+ex:3
+-----
+	BEGIN
+	update student set sname='gogo' where sno=101;
+	IF SQL%NOTFOUND THEN 
+	DBMS_OUTPUT.PUT_LINE('Record updated');
+	ELSE
+	DBMS_OUTPUT.PUT_LINE('Record Not Updated');
+	END IF;
+	END;
+	/
+
+ex:4
+----
+	BEGIN
+	update student set sname='raja';
+	DBMS_OUTPUT.PUT_LINE(SQL%ROWCOUNT||' records updated');
+	END;
+	/
+	
+
+
+
+
+
+2)Explicit cursor
+------------------
+All the activities related to cursor like opening the cursor , processing the cursor and closing the cursor which is done by a user is called explicit cursor.
+
+We need to use explicit cursor when select statement returns more then one value.
+
+We have four types of explicit cursor attributes.
+
+
+i)%ISOPEN
+-----------
+	It is a boolean attribute which returns true if cursor is open and 
+	returns false if cursor is closed.
+
+ii)%FOUND
+-------------
+	It is a boolean attribute which returns true if SQL command is success and 
+	returns false if SQL command is failed.
+
+iii)%NOTFOUND
+---------------
+	It is completely inverse of SQL%FOUND.
+
+	It is a boolean attribute which returns false if SQL command is success and 
+	returns true if SQL command is failed.
+
+iv)%ROWCOUNT 
+---------------
+	It will return number of records are effecting in a database table.
+
+
+Q)Write a PL/SQL program to select employee name,employee salary from emp table?
+
+	DECLARE 
+	CURSOR C1 is select ename,esal from emp;
+	L_Ename emp.ename%TYPE;
+	L_Esal emp.esal%TYPE;	
+	BEGIN
+	OPEN C1;
+	LOOP
+	FETCH C1 into L_Ename,L_Esal;
+	DBMS_OUTPUT.PUT_LINE(L_Ename||' '||L_Esal);
+	EXIT WHEN C1%NOTFOUND;
+	END LOOP;
+	CLOSE C1;
+	END;
+	/
+
+Q)Write a PL/SQL program to display employee information from emp table?
+
+	
+	DECLARE 
+	CURSOR C2 is select * from emp;
+	A emp%ROWTYPE;	
+	BEGIN
+	OPEN C2;
+	LOOP
+	FETCH C2 into A;
+	DBMS_OUTPUT.PUT_LINE(A.eid||' '||A.ename||' '||A.esal||' '||A.deptno);
+	EXIT WHEN C2%NOTFOUND;
+	END LOOP;
+	CLOSE C2;
+	END;
+	/
+
+
+
+Procedures
+============
+Procedures are also known as stored PL/SQL procedures.
+
+A procedure is a PL/SQL block which is compiled and execute in a database for repeated execution.
+
+syntax:
+	create or replace procedure <procedure_name>
+	is
+	begin
+	-
+	-
+	-	
+	END;
+	/
+
+
+To see the output in PL/SQL we need to use below command.
+ex:
+	SQL> set serveroutput on
+
+
+Q)Write a procedure to display Hello World? 
+
+	create or replace procedure p1
+	is
+	BEGIN
+	DBMS_OUTPUT.PUT_LINE('Hello World');
+	END;
+	/
+To execute above procedure we need to use below command.
+ex:
+	SQL>exec  p1;
+
+A procedure contains three parameters.
+
+1)IN parameter
+
+2)OUT parameter 
+
+3)IN OUT parameter 
+
+1)IN parameter
+---------------
+It is used to accept the values from the user.
+
+Q)Write a java PL/SQL program to perform sum of two numbers?
+
+	create or replace procedure sum(A IN number,B IN number)
+	is
+	C number;
+	begin
+	C:=A+B;
+	DBMS_OUTPUT.PUT_LINE('sum of two numbers is ='||C);
+	END;
+	/
+	
+To execute above procedure we need to use below command.
+ex:
+	SQL> exec   sum(10,20);
+	
+2)OUT parameter 
+----------------
+IT is used to return the value to the user.
+
+Q)Write a PL/SQL procedure to perform sum of two numbers and return sum?
+
+	create or replace procedure ret_sum(A IN number,B IN number,C OUT number)
+	is
+	begin
+	C:=A+B;
+	END;
+	/	
+
+steps to call a procedure having OUT parameter
+-----------------------------------------------
+step1:
+	create a bind variable
+	ex:
+		variable N number;
+step2:
+	execute the procedure 
+	ex:
+		exec  ret_sum(10,20,:N);
+step3:
+	print the bind variable 
+	ex:
+		print N;
+
+
+3) IN OUT parameter
+------------------
+It is used to accept the values from the user and it will return the values to the user.
+
+Q)Write a PL/SQL procedure to perform square of a given number?
+
+	create or replace procedure square(A IN OUT number)
+	is
+	begin
+	A:=A*A;
+	END;
+	/
+
+Steps to invoke a procedure having IN OUT parameter
+----------------------------------------------------
+step1:
+	declare a bind variable
+	ex:
+		variable N number;
+step2:
+	Initialize the bind variable 
+	ex:
+		BEGIN
+		:N:=5;
+		END;
+		/
+step3:
+	execute the procedure.
+	ex:
+		exec  square(:N);
+
+step4:
+	print the bind variable. 
+	ex:
+		print N;
+
+Note:
+-----
+	DML operations are allowed in procedures.
+
+
+Q)Write a procedure to delete student record based on student number?
+
+	create or replace procedure delete_record(L_Sno IN student.sno%TYPE)
+	is
+	begin
+	delete from student where sno=L_Sno;
+	DBMS_OUTPUT.PUT_LINE('Record is Deleted');
+	END;
+	/	
+
+We can invoke above procedure as follow.
+ex:
+	SQL>exec  delete_record(103);
+
+
+
+Q)Write a query to see the list of procedures present in database?
+
+	select object_name from user_objects where object_type='PROCEDURE';
+
+Q)Write a query to see the source code of a procedure?
+
+	select text from user_source where name='P1';
+
+Q)Write a query to drop the procedure?
+	
+	drop procedure p1;
+	drop procedure sum;
+	drop procedure ret_sum;
+	
+
+
+
+Functions
+==========
+A function is a PL/SQL block which must and should returns a value.
+
+syntax:
+	create or replace function <function_name> 
+	return datatype
+	is
+	begin
+	-
+	-
+	-
+	END;
+	/
+
+
+Q)Write a function to perform sum of two numbers and return sum?
+
+	create or replace function f1(A number,B number)
+	return number
+	is
+	C number;
+	begin
+	C:=A+B;
+	return C;
+	END;
+	/
+
+We can invoke above function as follow.
+ex:
+	select  f1(10,30) from dual;
+
+
+Q)Write a function to find out 10% of TDS ? 
+
+	create or replace function f2(sal  emp.esal%TYPE)
+	return number
+	is
+	L_TAX number;
+	begin
+	L_TAX:=sal*10/100;
+	return L_TAX;
+	END;
+	/
+
+We can invoke above function as follow
+ex:
+	select f2(25000) from dual;
+	select eid,ename,esal,f2(esal) from emp;
+	select eid,ename,esal,f2(esal) as TDS from emp;
+
+Note:
+-----
+	DML operations are not allowed in functions.
+
+
+Q)Write a query to see the list of functions present in database?
+
+	select object_name from user_objects where object_type='FUNCTION';
+
+Q)Write a query to see the source code of a function?
+
+	select text from user_source where name='f2';
+
+Q)Write a query to drop the function?
+	
+	drop function f1;
+	drop function f2;
+	
+Q)What is the difference between procedures and functions?
+
+Procedures				Functions
+-----------				----------
+A procedure may or may not returns a 	A function always returns a value.
+value.
+
+DML operations are allowed.		DML operations are not allowed.
+
+Can't be invoke by using select 	Can be invoke by using select command.
+command.
+
+
+Packages
+========
+A package is a collection of logical related sub programs.
+
+In PL/SQL , procedures and functions are called logical related sub programs.
+
+In general, a package is a collection of procedures and functions.
+
+A package declaration classified into two types.
+
+1) package specification 
+----------------------
+	It contains declaration of logical related sub programs.
+
+2) package body
+-------------
+	It contains definition of logical related sub programs.
+
+
+ex:1
+-----
+package specification
+-------------------
+create or replace package pkg1
+as
+procedure p1(A IN number,B IN number);
+END PKG1;
+/
+
+package body
+---------
+create or replace package body pkg1
+as 
+procedure p1(A IN number,B IN number)
+is
+C number;
+begin
+C:=A+B;
+DBMS_OUTPUT.PUT_LINE('sum of two numbers is ='||C);
+END;
+END PKG1;
+/
+
+Above procedure we can invoke by using below command.
+ex:
+	SQL> exec  pkg1.p1(40,50);
+
+
+
+ex:2
+----
+package specification
+---------------------
+create or replace package pkg2
+as
+function  f1(A number,B number)
+return number;
+end pkg2;
+/
+
+package body
+----------
+create or replace package body pkg2
+as 
+function  f1(A number,B number)
+return number
+is
+C number;
+begin
+C:=A+B;
+return C;
+END;
+END pkg2;
+/
+We can invoke above function by using below command.
+ex:
+	select  pkg2.f1(10,20) from dual;
+
+
+Q)Write a query to see the list of packages present in database?
+
+	select object_name from user_objects where object_type='PACKAGE';
+
+Q)Write a query to see the source code of a package?
+
+	select text from user_source where name='PKG1';
+
+Q)Write a query to drop the package?
+	
+	drop package body pkg1;
+	drop package pkg1;
+	drop package body pkg2;
+	drop package pkg2;
+
+Triggers
+===========
+Trigger is a PL/SQL block which is executed based on event.
+
+Trigger events are update,insert and delete.
+
+Trigger timmings are before, after and insteadof.
+
+syntax:
+	create or replace trigger <trigger_name> <timming> <event> on <object>
+	is
+	begin
+	-
+	-
+	-	
+	end;
+	/
+
+ex:
+	create or replace trigger trg1 before insert on student
+	begin
+	DBMS_OUTPUT.PUT_LINE('Thank you so much');
+	END;
+	/ 
+
+	select * from student;
+
+	insert into student values(103,'ramana','vizag'); // here trigger will occur
+
+
+We have two types of triggers.
+
+1)Statement level trigger
+
+2)Row level trigger 
+
+1)Statement level trigger
+-----------------------
+Trigger will execute only for one time irrespective of number of records effected in a database table.
+
+Bydefault every trigger is a statement level trigger.
+
+ex:
+	create or replace trigger trg2 after delete on student
+	begin
+	DBMS_OUTPUT.PUT_LINE('Thanks for deleting');
+	END;
+	/
+
+	delete from student; // here trigger will occur 
+
+2)Row level trigger 
+----------------------
+ROW level trigger will execute based on number of records effecting a database table.
+
+To create row level trigger we need to use "FOR EACH ROW" clause.
+
+ex:
+	create or replace trigger trg3 after delete on emp FOR EACH ROW
+	begin
+	DBMS_OUTPUT.PUT_LINE('Yahoo! Deleted');
+	END;
+	/
+
+	delete from emp; // here trigger will occur .
+
+
+Q)Write a query to see the list of triggers present in database?
+
+	select object_name from user_objects where object_type='TRIGGER';
+
+Q)Write a query to see the source code of a trigger?
+
+	select text from user_source where name='TRG1';
+
+Q)Write a query to drop the trigger?
+	
+	drop trigger trg1;
+	drop trigger trg2;
+	drop trigger trg3;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1
+
+
